@@ -1,0 +1,127 @@
+{
+  "_from": "itk",
+  "_id": "itk@10.2.0",
+  "_inBundle": false,
+  "_integrity": "sha512-/ZdcfRS6CTEFNkCY0dkjm0EPmlLvnnxoTdbS8BZ8YsNBfkLv3/KnbOdlYzTB2yL2Ey6L+IZ0ymuNze57ToiE7Q==",
+  "_location": "/itk",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "itk",
+    "name": "itk",
+    "escapedName": "itk",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/itk/-/itk-10.2.0.tgz",
+  "_shasum": "bdc3ce5c758ec7475a31744f195be25078214cd6",
+  "_spec": "itk",
+  "_where": "D:\\SchoolStudy\\Programming practice\\Visual Studio\\source\\XToolKit_Example\\itk_Example",
+  "author": {
+    "name": "Insight Software Consortium"
+  },
+  "bin": {
+    "itk-js": "./itk-js-cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/InsightSoftwareConsortium/itk-js/issues"
+  },
+  "bundleDependencies": false,
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "commander": "^2.19.0",
+    "mime-types": "^2.1.21",
+    "promise-file-reader": "^1.0.2",
+    "webworker-promise": "^0.4.2"
+  },
+  "deprecated": false,
+  "description": "High performance spatial analysis in a JavaScript runtime environment.",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.2.0",
+    "async": "^2.6.1",
+    "ava": "^2.4.0",
+    "babel-loader": "^8.0.5",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "2.1.0",
+    "file-api": "^0.10.4",
+    "fs-extra": "^7.0.1",
+    "glob": "^7.1.3",
+    "json-loader": "^0.5.7",
+    "karma": "^4.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-tap": "^4.1.4",
+    "karma-tap-pretty-reporter": "^4.1.0",
+    "karma-webpack": "3.0.5",
+    "kw-doc": "^1.3.0",
+    "ramda": "^0.26.1",
+    "standard": "^14.3.1",
+    "tap-spec": "^5.0.0",
+    "tape": "^4.9.1",
+    "uglifyify": "^5.0.2",
+    "webpack": "^3.12.0",
+    "webpack-cli": "^3.2.3"
+  },
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "homepage": "https://insightsoftwareconsortium.github.io/itk-js/",
+  "keywords": [
+    "itk",
+    "imaging",
+    "io",
+    "medical",
+    "scientific"
+  ],
+  "license": "Apache-2.0",
+  "main": "./dist/itk.js",
+  "name": "itk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/InsightSoftwareConsortium/itk-js.git"
+  },
+  "scripts": {
+    "build": "npm run build:wasm && npm run build:webpack",
+    "build:wasm": "node ./build.js",
+    "build:webpack": "webpack --progress --colors -p",
+    "commit": "git cz",
+    "doc": "kw-doc -c ./doc/config.js",
+    "doc:publish": "kw-doc -c ./doc/config.js -mp",
+    "doc:www": "kw-doc -c ./doc/config.js -s",
+    "test": "npm run test:lint && npm run test:node && npm run test:browser",
+    "test:browser": "karma start ./karma.conf.js",
+    "test:browser-debug": "karma start ./karma.conf.js --no-single-run",
+    "test:lint": "standard \"src/*.js\" \"test/**/*.js\"",
+    "test:node": "ava test/*.js"
+  },
+  "standard": {
+    "ignore": [
+      "src/itkConfigCDN.js",
+      "src/loadEmscriptenModuleBrowser.js",
+      "src/index.js",
+      "src/itk-js-cli.js",
+      "src/EmscriptenModule/*",
+      "itkJSImageIOPost.js",
+      "test/Browser/tests.js",
+      "test/config/itkConfigTest.js",
+      "test/*Pipeline/",
+      "examples/UMD/test/index.js"
+    ]
+  },
+  "version": "10.2.0"
+}

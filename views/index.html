@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title></title>
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/segmentation.css" />
+
+    <script src="http://use.edgefonts.net/source-code-pro.js"></script>
+    <script type="text/javascript" src="libs/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="libs/jquery.ui.js"></script>
+    <script type="text/javascript" src="libs/dat.gui.min.js"></script>
+    <script type="text/javascript" src="libs/stats.min.js"></script>
+    <script type="text/javascript" src="libs/three.min.js"></script>
+    <!--<script type="text/javascript" src="libs/ami.min.js"></script>-->
+    <script type="text/javascript" src="libs/new-ami/ami.js"></script>
+    <script type="text/javascript" src="libs/itk.js"></script>
+    <script type="text/javascript" src="libs/d3.min.js"></script>
+
+    <script type="text/javascript" src="js/ObjectFiles.js"></script>
+    <script type="text/javascript" src="js/ObjectStackVolume.js"></script>
+    <script type="text/javascript" src="js/ObjectImageProcessing.js"></script>
+    <script type="text/javascript" src="js/ObjectRendering.js"></script>
+    <script type="text/javascript" src="js/ObjectSegmentation.js"></script>
+    <script type="text/javascript" src="js/Utils.js"></script>
+    <script type="text/javascript" src="js/Main.js"></script>
+
+</head>
+<body>
+    <div id="front">
+        <div id="iInput">
+            <label>Select Image Files :</label>
+            <input name="iFile" type="file" multiple="multiple">
+        </div>
+        <div id="sInput">
+            <label>Select segment files :</label>
+            <input name="sFile" type="file" multiple="multiple">
+        </div>
+        <div id="cInput">
+            <label>Select segment lookup table files:</label>
+            <input name="cFile" type="file" multiple="multiple">
+        </div>
+
+        <!--<div id="renderButton">Render</div>-->
+        <input type="button" id="renderButton" value="Render" />
+        <div id="title">
+            YMIST
+        </div>
+        <div id="subtitle">
+            Medical Imaging Tool
+        </div>
+        <div id="fileLists">
+            -------FILE LIST-------
+        </div>
+    </div>
+    <div id="viewer">
+        <div id="my-lut-container">
+            <div id="my-lut-min">0.0</div>
+            <div id="my-lut-canvases"></div>
+            <div id="my-lut-max">1.0</div>
+        </div>
+        <div id="my-seg-container">
+            <div id="my-seg-min">0.0</div>
+            <div id="my-seg-canvases"></div>
+            <div id="my-seg-max">1.0</div>
+        </div>
+        <div id="my-gui-container"></div>
+        <div class="visualizer">
+            <div id="r0" class="renderer"></div>
+            <div id="r1" class="renderer"></div>
+            <div id="r2" class="renderer"></div>
+            <div id="r3" class="renderer"></div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,310 @@
+﻿#stats {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.visualizer {
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    background-color: #353535;
+}
+
+.renderer {
+    background-color: #000;
+    width: 50%;
+    height: 50%;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-bottom: none;
+    position: absolute;
+    overflow: hidden;
+}
+
+#r0 {
+    border-top: 2px solid #03a9f4;
+    height: 100%;
+    left: 50%;
+    top: 0%;
+}
+
+#r1 {
+    border-top: 2px solid #f44336;
+    height: 33%;
+    left: 0%;
+    top: 0%;
+}
+
+#r2 {
+    border-top: 2px solid #ffeb3b;
+    height: 33%;
+    left: 0%;
+    top: 33%;
+}
+
+#r3 {
+    border-top: 2px solid #8bc34a;
+    height: 33%;
+    left: 0%;
+    top: 66%;
+}
+
+#my-gui-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+}
+
+#my-colortable-container {
+    top: 20px;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 1;
+    color: #f9f9f9;
+    display: flex;
+}
+
+    #my-colortable-container > #my-colortable-canvases {
+        position: relative;
+    }
+
+#my-colortable-min {
+    margin-right: 10px;
+}
+
+#my-colortable-max {
+    margin-left: 10px;
+}
+
+#my-colortable-container > #my-colortable-canvases > :first-child {
+    background: repeating-linear-gradient(-45deg, #353535, #353535 5px, black 5px, black 10px);
+}
+
+#my-colortable-container > #my-colortable-canvases > :nth-child(2) {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#my-opacitytable-container {
+    top: 20px;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 1;
+    color: #f9f9f9;
+    display: flex;
+}
+
+    #my-opacitytable-container > #my-opacitytable-canvases {
+        position: relative;
+    }
+
+#my-opacitytable-min {
+    margin-right: 10px;
+}
+
+#my-opacitytable-max {
+    margin-left: 10px;
+}
+
+#my-opacitytable-container > #my-opacitytable-canvases > :first-child {
+    background: repeating-linear-gradient(-45deg, #353535, #353535 5px, black 5px, black 10px);
+}
+
+#my-opacitytable-container > #my-opacitytable-canvases > :nth-child(2) {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#my-lut-container {
+    bottom: 0%;
+    position: fixed;
+    left: 50%;
+    transform: translate(0%, -100%);
+    z-index: 1;
+    color: #f9f9f9;
+    display: flex;
+}
+
+    #my-lut-container > #my-lut-canvases {
+        position: relative;
+    }
+
+#my-lut-min {
+    margin-right: 10px;
+}
+
+#my-lut-max {
+    margin-left: 10px;
+}
+
+#my-lut-container > #my-lut-canvases > :first-child {
+    background: repeating-linear-gradient(-45deg, #353535, #353535 5px, black 5px, black 10px);
+}
+
+#my-lut-container > #my-lut-canvases > :nth-child(2) {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#my-seg-container {
+    bottom: 0%;
+    position: fixed;
+    left: 50%;
+    transform: translate(0%, 0);
+    z-index: 1;
+    color: #f9f9f9;
+    display: none;
+    height: 23px;
+    overflow: hidden;
+}
+
+    #my-seg-container > #my-seg-canvases {
+        position: relative;
+    }
+
+#my-seg-min {
+    margin-right: 10px;
+}
+
+#my-seg-max {
+    margin-left: 10px;
+}
+
+#my-seg-container > #my-seg-canvases > :first-child {
+    background: repeating-linear-gradient(-45deg, #353535, #353535 5px, black 5px, black 10px);
+}
+
+#my-seg-container > #my-seg-canvases > :nth-child(2) {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#front {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-image: url(../image/this2.png);
+    background-repeat: no-repeat;
+}
+#title {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-attachment: fixed;
+    position: absolute;
+    margin: 0;
+    display: flex;
+    font-size: 80px;
+    top: 280px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    color: white;
+}
+
+#subtitle {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-attachment: fixed;
+    position: fixed;
+    margin: 0;
+    display: flex;
+    border: solid;
+    font-size: 40px;
+    padding: 3px;
+    top: 400px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    color: white;
+}
+
+#iInput {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-attachment: fixed;
+    position: fixed;
+    margin: 0;
+    display: flex;
+    top: 480px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    color: white;
+}
+
+#sInput {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-attachment: fixed;
+    position: fixed;
+    margin: 0;
+    display: flex;
+    top: 520px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    color: white;
+}
+
+#cInput {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-attachment: fixed;
+    position: fixed;
+    margin: 0;
+    display: flex;
+    top: 560px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    color: white;
+}
+
+#fileLists {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    position: fixed;
+    margin: 0;
+    top: 660px;
+    left: 50%;
+    height: 200px;
+    transform: translate(-50%, 0);
+    color: white;
+    overflow: scroll;
+}
+
+#renderButton {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    position: fixed;
+    margin: 0;
+    display: flex;
+    top: 600px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+#viewer {
+    width: 100%;
+    height: 100%;
+    display: none;
+}
