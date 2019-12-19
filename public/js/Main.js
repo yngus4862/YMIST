@@ -4,28 +4,32 @@ wheel = null;   //Date
 wheelTO = null; //Timeout
 gui = null;
 
-copyStack = function (stack) {
+CopyFrame = function (frame) {
+    var copyFrame = new AMI.FrameModel();
+    copyFrame._bitsAllocated = 8;
+    copyFrame._columns = frame._columns;
+    copyFrame._rows = frame._rows;
+    copyFrame._imageOrientation = frame._imageOrientation.slice();
+    copyFrame._imagePosition = frame._imagePosition.slice();
+    copyFrame._index = frame._index;
+    copyFrame._instanceNumber = frame._instanceNumber;
+    copyFrame._minMax = [0, 255];
+    copyFrame._pixelData = new Uint8Array(copyFrame._columns * copyFrame._rows);
+    copyFrame._pixelRepresentation = frame._pixelRepresentation;
+    copyFrame._pixelSpacing = frame._pixelSpacing;
+    copyFrame._pixelType = 0;
+    copyFrame.rescaleSlope = 1;
+    copyFrame.rescaleIntercept = 0;
+    copyFrame._sliceThickness = frame._sliceThickness;
+    copyFrame._windowCenter = 127;
+    copyFrame._windowWidth = 255;
+    return copyFrame;
+};
+CopyStack = function (stack) {
     var copyStack = new AMI.StackModel();
     for (var i = 0; i < stack._frame.length; i++) {
         var frame = stack._frame[i];
-        var copyFrame = new AMI.FrameModel();
-        copyFrame._bitsAllocated = 8;
-        copyFrame._columns = frame._columns;
-        copyFrame._rows = frame._rows;
-        copyFrame._imageOrientation = frame._imageOrientation.slice();
-        copyFrame._imagePosition = frame._imagePosition.slice();
-        copyFrame._index = frame._index;
-        copyFrame._instanceNumber = frame._instanceNumber;
-        copyFrame._minMax = [0, 255];
-        copyFrame._pixelData = new Uint8Array(copyFrame._columns * copyFrame._rows);
-        copyFrame._pixelRepresentation = frame._pixelRepresentation;
-        copyFrame._pixelSpacing = frame._pixelSpacing;
-        copyFrame._pixelType = 0;
-        copyFrame.rescaleSlope = 1;
-        copyFrame.rescaleIntercept = 0;
-        copyFrame._sliceThickness = frame._sliceThickness;
-        copyFrame._windowCenter = 127;
-        copyFrame._windowWidth = 255;
+        var copyFrame = CopyFrame(frame);
         copyStack._frame.push(copyFrame);
     }
 
@@ -69,7 +73,7 @@ $(document).ready(function () {
                         segment.frame[i].pixelType = 0;
                         segment.frame[i].pixelData = new Uint8Array(segment._dimensionsIJK.x * segment._dimensionsIJK.y);
                     }*/
-                    segment = copyStack(stack);
+                    segment = CopyStack(stack);
 
                     segment.prepare();
                 }
@@ -296,6 +300,7 @@ render = function () {
         if (vr.volumeToggle) {
             if (vr.modified) {
                 r0.renderer.clear();
+
                 r0.renderer.render(vr.scene, r0.camera);
                 if (!vr.downsizing) {
                     vr.modified = false;
@@ -337,7 +342,7 @@ render = function () {
         }
     }
 
-    stats.update();
+    //stats.update();
 };
 init = function () {
     function animate() {
@@ -348,15 +353,15 @@ init = function () {
         });
     }
 
-    initRendererVR(vr);
     initRenderer3D(r0);
     initRenderer2D(r1);
     initRenderer2D(r2);
     initRenderer2D(r3);
+    initRendererVR(vr);
 
     // stats
-    stats = new Stats();
-    r0.domElement.appendChild(stats.domElement);
+    //stats = new Stats();
+    //r0.domElement.appendChild(stats.domElement);
 
     animate();
     //render();

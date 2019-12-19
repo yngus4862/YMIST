@@ -48,7 +48,7 @@ body {
 
 #r1 {
     border-top: 2px solid #f44336;
-    height: 33%;
+    height: 34%;
     left: 0%;
     top: 0%;
 }
@@ -57,14 +57,14 @@ body {
     border-top: 2px solid #ffeb3b;
     height: 33%;
     left: 0%;
-    top: 33%;
+    top: 34%;
 }
 
 #r3 {
     border-top: 2px solid #8bc34a;
     height: 33%;
     left: 0%;
-    top: 66%;
+    top: 67%;
 }
 
 #my-gui-container {
@@ -141,8 +141,8 @@ body {
 #my-lut-container {
     bottom: 0%;
     position: fixed;
-    left: 50%;
-    transform: translate(0%, -100%);
+    left: 75%;
+    transform: translate(-50%, -100%);
     z-index: 1;
     color: #f9f9f9;
     display: flex;
@@ -173,8 +173,8 @@ body {
 #my-seg-container {
     bottom: 0%;
     position: fixed;
-    left: 50%;
-    transform: translate(0%, 0);
+    left: 75%;
+    transform: translate(-50%, 0);
     z-index: 1;
     color: #f9f9f9;
     display: none;

@@ -4,7 +4,7 @@
     sFilelist: [],
     cFilelist: [],
     downloadFormat: "NRRD",
-    downloadName: '',
+    downloadName: 'new',
     downloadStack: function (target = null, nameAs = null) {
         var arrayBuffer;
         target = stack;
@@ -74,7 +74,7 @@
             }
             nrrd.modality = stack._modality;
             nrrd.encoding = 'raw';
-            AMI.NrrdParser.compress(nrrd);
+            //AMI.NrrdParser.compress(nrrd);
             arrayBuffer = AMI.NrrdParser.serialize(nrrd);
         } else if (this.downloadFormat === 'NII') {
             arrayBuffer = AMI.NrrdParser.serialize(nrrd);

@@ -15,13 +15,15 @@ widgetsAvailable = [
     'Annotation',
 ];
 segmentationGUIObjects = {
-    algorithm: 'ITKConnectedThreshold',
-    algorithms: ['ITKConnectedThreshold', 'ITKConfidenceConnected', 'ITKConfidenceConnected3D'],
+    //algorithm: 'ITKConnectedThreshold',
+    //algorithms: ['ITKConnectedThreshold', 'ITKConfidenceConnected', 'ITKConfidenceConnected3D'],
+    algorithm: 'ITKConnectedThreshold3D',
+    algorithms: ['ITKConnectedThreshold3D', 'ITKNeighborhoodConnected3D', 'ITKConfidenceConnected3D', 'ITKIsolatedConnected3D'],
     segmentation: function () {
         if (widgets.length < 1) {
             return;
         }
-        let XYZ = getXYZofWidget1();
+        let XYZ = getXYZofWidget(widgets[0]);
         var index = XYZ.z;
 
         const pipelinePath = this.algorithm;
@@ -34,7 +36,7 @@ segmentationGUIObjects = {
         ];
 
         switch (this.algorithm) {
-            case 'ITKConnectedThreshold':
+            /*case 'ITKConnectedThreshold':
                 itkImage = createITKImage(stack, index);
                 inputs[0].data = itkImage;
 
@@ -49,6 +51,29 @@ segmentationGUIObjects = {
 
                 args.push(String(XYZ.x));
                 args.push(String(XYZ.y));
+                break;*/
+
+            case 'ITKConnectedThreshold3D':
+                itkImage = createITKImage3D(stack);
+                inputs[0].data = itkImage;
+
+                args.push(String(r1.stackHelper.slice.lowerThreshold));
+                args.push(String(r1.stackHelper.slice.upperThreshold));
+
+                args.push(String(XYZ.x));
+                args.push(String(XYZ.y));
+                args.push(String(XYZ.z));
+                break;
+            case 'ITKNeighborhoodConnected3D':
+                itkImage = createITKImage3D(stack);
+                inputs[0].data = itkImage;
+
+                args.push(String(r1.stackHelper.slice.lowerThreshold));
+                args.push(String(r1.stackHelper.slice.upperThreshold));
+
+                args.push(String(XYZ.x));
+                args.push(String(XYZ.y));
+                args.push(String(XYZ.z));
                 break;
             case 'ITKConfidenceConnected3D':
                 itkImage = createITKImage3D(stack);
@@ -57,6 +82,27 @@ segmentationGUIObjects = {
                 args.push(String(XYZ.x));
                 args.push(String(XYZ.y));
                 args.push(String(XYZ.z));
+                break;
+            case 'ITKIsolatedConnected3D':
+                if (widgets.length < 2) {
+                    alert('need 2 seeds');
+                    return;
+                }
+                itkImage = createITKImage3D(stack);
+                inputs[0].data = itkImage;
+
+                let seed1 = getXYZofWidget(widgets[0]);
+                let seed2 = getXYZofWidget(widgets[1]);
+
+                args.push(String(r1.stackHelper.slice.lowerThreshold));
+
+                args.push(String(seed1.x));
+                args.push(String(seed1.y));
+                args.push(String(seed1.z));
+
+                args.push(String(seed2.x));
+                args.push(String(seed2.y));
+                args.push(String(seed2.z));
                 break;
             default:
                 break;
@@ -79,17 +125,38 @@ segmentationGUIObjects = {
                         });
                 } else if (outputs[0].data.imageType.dimension === 3) {
                     for (var i = 0; i < size[2]; i++) {
+                        if (!segment.frame[i]) {
+                            segment.frame[i] = CopyFrame(stack._frame[i]);
+                        }
                         switch (type.componentType) {
                             case itk.IntTypes.Int8:
                                 segment.frame[i].pixelData = new Int8Array(outputs[0].data.data.slice(i * size[0] * size[1], (i + 1) * size[0] * size[1]));
+                                segment.frame[i]._bitsAllocated = 8;
                                 break;
                             case itk.IntTypes.UInt8:
                                 segment.frame[i].pixelData = new Uint8Array(outputs[0].data.data.slice(i * size[0] * size[1], (i + 1) * size[0] * size[1]));
+                                segment.frame[i]._bitsAllocated = 8;
+                                break;
+                            case itk.IntTypes.Int16:
+                                segment.frame[i].pixelData = new Int16Array(outputs[0].data.data.slice(i * size[0] * size[1], (i + 1) * size[0] * size[1]));
+                                segment.frame[i]._bitsAllocated = 16;
+                                break;
+                            case itk.IntTypes.UInt16:
+                                segment.frame[i].pixelData = new Uint16Array(outputs[0].data.data.slice(i * size[0] * size[1], (i + 1) * size[0] * size[1]));
+                                segment.frame[i]._bitsAllocated = 16;
+                                break;
+                            case itk.IntTypes.Int32:
+                                segment.frame[i].pixelData = new Int32Array(outputs[0].data.data.slice(i * size[0] * size[1], (i + 1) * size[0] * size[1]));
+                                segment.frame[i]._bitsAllocated = 32;
+                                break;
+                            case itk.IntTypes.UInt32:
+                                segment.frame[i].pixelData = new Uint32Array(outputs[0].data.data.slice(i * size[0] * size[1], (i + 1) * size[0] * size[1]));
+                                segment.frame[i]._bitsAllocated = 32;
                                 break;
                         }
                     }
-
-                    DownloadFile(outputs[0].data.data, 'segmentation.raw');
+                    segment._bitsAllocated = segment.frame[0]._bitsAllocated;
+                    //DownloadFile(outputs[0].data.data, 'segmentation.raw');
                 }
                 segment._rawData = [];
                 segment.pack();
@@ -99,7 +166,7 @@ segmentationGUIObjects = {
                 updateSegmentMaterial(r3);
                 updateSegmentVolumeMesh(vr);
                 allModified();
-
+                alert("done");
             });
     },
     widgetType: 'None',
@@ -171,8 +238,8 @@ segmentationGUIObjects = {
     }
 };
 
-getXYZofWidget1 = function () {
-    var widget_position = widgets[0].worldPosition;
+getXYZofWidget = function (widget) {
+    var widget_position = widget.worldPosition;
     var origin = stack._origin;
     var spacing = stack._spacing;
     var x = (widget_position.x - origin.x) / spacing.x;

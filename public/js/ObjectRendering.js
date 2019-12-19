@@ -7,8 +7,8 @@ initRenderer3D = function (renderObj) {
     // renderer
     renderObj.domElement = document.getElementById(renderObj.domId);
     renderObj.renderer = new THREE.WebGLRenderer({
-        //antialias: true,
-        antialias: false
+        antialias: true,
+        //antialias: false
     });
     renderObj.renderer.setSize(renderObj.domElement.clientWidth, renderObj.domElement.clientHeight);
     renderObj.renderer.setClearColor(renderObj.color, 1);
@@ -51,8 +51,8 @@ initRenderer2D = function (rendererObj) {
     // renderer
     rendererObj.domElement = document.getElementById(rendererObj.domId);
     rendererObj.renderer = new THREE.WebGLRenderer({
-        //antialias: true,
-        antialias: false
+        antialias: true,
+        //antialias: false
     });
     rendererObj.renderer.autoClear = false;
     rendererObj.renderer.localClippingEnabled = true;
@@ -182,7 +182,9 @@ initHelpersStack = function (rendererObj, stack) {
 initHelpersSegmentVolumeRendering = function (rendererObj, segment) {
     rendererObj.vrHelperSeg = new AMI.VolumeRenderingHelper(segment);
     rendererObj.scene.add(rendererObj.vrHelperSeg);
-    rendererObj.vrHelperSeg.interpolation = 0;
+    //rendererObj.vrHelperSeg.interpolation = 0;
+    //rendererObj.vrHelperSeg.interpolation = 2;
+    rendererObj.vrHelperSeg.interpolation = 3;
 
     if (segment._segmentationSegments) {
         for (var i = 0; i < segment._segmentationSegments.length; i++) {
@@ -200,7 +202,6 @@ initHelpersSegmentVolumeRendering = function (rendererObj, segment) {
 
     rendererObj.vrHelperSeg.uniforms.uTextureLUTSegmentation.value = segmentHelper.segmentLUT.texture;
     rendererObj.vrHelperSeg.uniforms.uLutSegmentation.value = 1;
-    rendererObj.vrHelperSeg.uniforms.uInterpolation.value = 0;
     rendererObj.vrHelperSeg.uniforms.uAlphaCorrection.value = 1;
 };
 initHelpersSegmentStack = function (rendererObj, segment) {

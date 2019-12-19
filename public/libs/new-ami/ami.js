@@ -31472,7 +31472,8 @@ var geometriesSlice = function geometriesSlice() {
       _this.type = 'SliceBufferGeometry';
 
       // update real position of each vertex! (not in 2d)
-      _this.addAttribute('position', new three.Float32BufferAttribute(positions, 3));
+      //this.addAttribute( 'position', new three.Float32BufferAttribute( positions, 3 ) );
+      _this.setAttribute('position', new three.Float32BufferAttribute(positions, 3));
       _this.vertices = points; // legacy code to compute normals int he SliceHelper
       return _this;
     }
@@ -31652,7 +31653,8 @@ var helpersBorder = function helpersBorder() {
       var positions = new Float32Array((nbOfVertices + 1) * 3);
       positions.set(this._helpersSlice.geometry.attributes.position.array, 0);
       positions.set(this._helpersSlice.geometry.vertices[0].toArray(), nbOfVertices * 3);
-      this._geometry.addAttribute('position', new three.Float32BufferAttribute(positions, 3));
+      //this._geometry.addAttribute( 'position', new three.Float32BufferAttribute( positions, 3 ) );
+      this._geometry.setAttribute('position', new three.Float32BufferAttribute(positions, 3));
 
       this._mesh = new three.Line(this._geometry, this._material);
       if (this._helpersSlice.aabbSpace === 'IJK') {
@@ -43516,6 +43518,8 @@ var InterpolationIdentity = function (_ShadersBase) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./shaders.interpolation.identity */ "./src/shaders/interpolation/shaders.interpolation.identity.js");
 /* harmony import */ var _shaders_interpolation_trilinear__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shaders.interpolation.trilinear */ "./src/shaders/interpolation/shaders.interpolation.trilinear.js");
+/* harmony import */ var _shaders_interpolation_nearest__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shaders.interpolation.nearest */ "./src/shaders/interpolation/shaders.interpolation.nearest.js");
+
 
 
 
@@ -43529,12 +43533,79 @@ function shadersInterpolation(baseFragment, currentVoxel, dataValue, gradient) {
       // trilinear interpolation
       return _shaders_interpolation_trilinear__WEBPACK_IMPORTED_MODULE_1__["default"].api(baseFragment, currentVoxel, dataValue, gradient);
 
+    case 2:
+      return _shaders_interpolation_nearest__WEBPACK_IMPORTED_MODULE_2__["default"].api(baseFragment, currentVoxel, dataValue, gradient);
+
     default:
       return _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_0__["default"].api(baseFragment, currentVoxel, dataValue);
   }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (shadersInterpolation);
+
+/***/ }),
+
+/***/ "./src/shaders/interpolation/shaders.interpolation.nearest.js":
+/*!********************************************************************!*\
+  !*** ./src/shaders/interpolation/shaders.interpolation.nearest.js ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _shaders_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../shaders.base */ "./src/shaders/shaders.base.js");
+/* harmony import */ var _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shaders.interpolation.identity */ "./src/shaders/interpolation/shaders.interpolation.identity.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var InterpolationNearest = function (_ShadersBase) {
+  _inherits(InterpolationNearest, _ShadersBase);
+
+  function InterpolationNearest() {
+    _classCallCheck(this, InterpolationNearest);
+
+    var _this = _possibleConstructorReturn(this, _ShadersBase.call(this));
+
+    _this.name = 'interpolationNearest';
+
+    // default properties names
+    _this._currentVoxel = 'currentVoxel';
+    _this._dataValue = 'dataValue';
+    _this._gradient = 'gradient';
+    return _this;
+  }
+
+  InterpolationNearest.prototype.api = function api() {
+    var baseFragment = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._base;
+    var currentVoxel = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._currentVoxel;
+    var dataValue = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._dataValue;
+    var gradient = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this._gradient;
+
+    this._base = baseFragment;
+    return this.compute(currentVoxel, dataValue, gradient);
+  };
+
+  InterpolationNearest.prototype.compute = function compute(currentVoxel, dataValue, gradient) {
+    this.computeDefinition();
+    this._base._functions[this._name] = this._definition;
+    return this._name + '(' + currentVoxel + ', ' + dataValue + ', ' + gradient + ');';
+  };
+
+  InterpolationNearest.prototype.computeDefinition = function computeDefinition() {
+    this._definition = '\nvoid nearestInterpolation(\n  in vec3 normalizedPosition,\n  out vec4 interpolatedValue,\n  in vec4 v000, in vec4 v100,\n  in vec4 v001, in vec4 v101,\n  in vec4 v010, in vec4 v110,\n  in vec4 v011, in vec4 v111) {\n  // https://en.wikipedia.org/wiki/Trilinear_interpolation\n  //vec4 c00 = v000 * ( 1.0 - normalizedPosition.x ) + v100 * normalizedPosition.x;\n  //vec4 c01 = v001 * ( 1.0 - normalizedPosition.x ) + v101 * normalizedPosition.x;\n  //vec4 c10 = v010 * ( 1.0 - normalizedPosition.x ) + v110 * normalizedPosition.x;\n  //vec4 c11 = v011 * ( 1.0 - normalizedPosition.x ) + v111 * normalizedPosition.x;\n\n  // c0 and c1\n  //vec4 c0 = c00 * ( 1.0 - normalizedPosition.y) + c10 * normalizedPosition.y;\n  //vec4 c1 = c01 * ( 1.0 - normalizedPosition.y) + c11 * normalizedPosition.y;\n\n  // c\n  //vec4 c = c0 * ( 1.0 - normalizedPosition.z) + c1 * normalizedPosition.z;\n\n  vec4 c00 = 0.5 > normalizedPosition.x ? v000 : v100;\n  vec4 c01 = 0.5 > normalizedPosition.x ? v001 : v101;\n  vec4 c10 = 0.5 > normalizedPosition.x ? v010 : v110;\n  vec4 c11 = 0.5 > normalizedPosition.x ? v011 : v111;\n  vec4 c0 = 0.5 > normalizedPosition.y ? c00 : c01;\n  vec4 c1 = 0.5 > normalizedPosition.y ? c10 : c11;\n  vec4 c = 0.5 > normalizedPosition.z ? c0 : c1;\n  interpolatedValue = c;\n}\n\nvoid ' + this._name + '(in vec3 currentVoxel, out vec4 dataValue, out vec3 gradient){\n\n  vec3 lower_bound = floor(currentVoxel);\n  lower_bound = max(vec3(0.), lower_bound);\n  \n  vec3 higher_bound = lower_bound + vec3(1.);\n\n  vec3 normalizedPosition = (currentVoxel - lower_bound);\n  normalizedPosition =  max(vec3(0.), normalizedPosition);\n\n  vec4 interpolatedValue = vec4(0.);\n\n  //\n  // fetch values required for interpolation\n  //\n  vec4 v000 = vec4(0.0, 0.0, 0.0, 0.0);\n  vec3 c000 = vec3(lower_bound.x, lower_bound.y, lower_bound.z);\n  ' + _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__["default"].api(this._base, 'c000', 'v000') + '\n\n  //\n  vec4 v100 = vec4(0.0, 0.0, 0.0, 0.0);\n  vec3 c100 = vec3(higher_bound.x, lower_bound.y, lower_bound.z);\n  ' + _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__["default"].api(this._base, 'c100', 'v100') + '\n\n  //\n  vec4 v001 = vec4(0.0, 0.0, 0.0, 0.0);\n  vec3 c001 = vec3(lower_bound.x, lower_bound.y, higher_bound.z);\n  ' + _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__["default"].api(this._base, 'c001', 'v001') + '\n\n  //\n  vec4 v101 = vec4(0.0, 0.0, 0.0, 0.0);\n  vec3 c101 = vec3(higher_bound.x, lower_bound.y, higher_bound.z);\n  ' + _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__["default"].api(this._base, 'c101', 'v101') + '\n  \n  //\n  vec4 v010 = vec4(0.0, 0.0, 0.0, 0.0);\n  vec3 c010 = vec3(lower_bound.x, higher_bound.y, lower_bound.z);\n  ' + _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__["default"].api(this._base, 'c010', 'v010') + '\n\n  vec4 v110 = vec4(0.0, 0.0, 0.0, 0.0);\n  vec3 c110 = vec3(higher_bound.x, higher_bound.y, lower_bound.z);\n  ' + _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__["default"].api(this._base, 'c110', 'v110') + '\n\n  //\n  vec4 v011 = vec4(0.0, 0.0, 0.0, 0.0);\n  vec3 c011 = vec3(lower_bound.x, higher_bound.y, higher_bound.z);\n  ' + _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__["default"].api(this._base, 'c011', 'v011') + '\n\n  vec4 v111 = vec4(0.0, 0.0, 0.0, 0.0);\n  vec3 c111 = vec3(higher_bound.x, higher_bound.y, higher_bound.z);\n  ' + _shaders_interpolation_identity__WEBPACK_IMPORTED_MODULE_1__["default"].api(this._base, 'c111', 'v111') + '\n\n  // compute interpolation at position\n  nearestInterpolation(normalizedPosition, interpolatedValue ,v000, v100, v001, v101, v010,v110, v011,v111);\n  dataValue = interpolatedValue;\n\n  // That breaks shading in volume rendering\n  // if (gradient.x == 1.) { // skip gradient calculation for slice helper\n  //  return;\n  // }\n\n  // compute gradient\n  float gradientStep = 0.005;\n\n  // x axis\n  vec3 g100 = vec3(1., 0., 0.);\n  vec3 ng100 = normalizedPosition + g100 * gradientStep;\n  ng100.x = min(1., ng100.x);\n\n  vec4 vg100 = vec4(0.);\n  nearestInterpolation(ng100, vg100 ,v000, v100, v001, v101, v010,v110, v011,v111);\n\n  vec3 go100 = -g100;\n  vec3 ngo100 = normalizedPosition + go100 * gradientStep;\n  ngo100.x = max(0., ngo100.x);\n\n  vec4 vgo100 = vec4(0.);\n  nearestInterpolation(ngo100, vgo100 ,v000, v100, v001, v101, v010,v110, v011,v111);\n\n  gradient.x = (g100.x * vg100.x + go100.x * vgo100.x);\n\n  // y axis\n  vec3 g010 = vec3(0., 1., 0.);\n  vec3 ng010 = normalizedPosition + g010 * gradientStep;\n  ng010.y = min(1., ng010.y);\n\n  vec4 vg010 = vec4(0.);\n  nearestInterpolation(ng010, vg010 ,v000, v100, v001, v101, v010,v110, v011,v111);\n\n  vec3 go010 = -g010;\n  vec3 ngo010 = normalizedPosition + go010 * gradientStep;\n  ngo010.y = max(0., ngo010.y);\n\n  vec4 vgo010 = vec4(0.);\n  nearestInterpolation(ngo010, vgo010 ,v000, v100, v001, v101, v010,v110, v011,v111);\n\n  gradient.y = (g010.y * vg010.x + go010.y * vgo010.x);\n\n  // z axis\n  vec3 g001 = vec3(0., 0., 1.);\n  vec3 ng001 = normalizedPosition + g001 * gradientStep;\n  ng001.z = min(1., ng001.z);\n\n  vec4 vg001 = vec4(0.);\n  nearestInterpolation(ng001, vg001 ,v000, v100, v001, v101, v010,v110, v011,v111);\n\n  vec3 go001 = -g001;\n  vec3 ngo001 = normalizedPosition + go001 * gradientStep;\n  ngo001.z = max(0., ngo001.z);\n\n  vec4 vgo001 = vec4(0.);\n  nearestInterpolation(ngo001, vgo001 ,v000, v100, v001, v101, v010,v110, v011,v111);\n\n  gradient.z = (g001.z * vg001.x + go001.z * vgo001.x);\n\n  // normalize gradient\n  // +0.0001  instead of if?\n  float gradientMagnitude = length(gradient);\n  if (gradientMagnitude > 0.0) {\n    gradient = -(1. / gradientMagnitude) * gradient;\n  }\n}\n    ';
+  };
+
+  return InterpolationNearest;
+}(_shaders_base__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (new InterpolationNearest());
 
 /***/ }),
 
